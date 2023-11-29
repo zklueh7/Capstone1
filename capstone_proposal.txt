@@ -1,0 +1,33 @@
+Capstone Proposal
+1. What goal will your website be designed to achieve? 
+My website will be a tool designed to help users plan road trips. The user will be able to plot their desired route on a map and create agendas for each stop on their trip. The website will also have a packing list and a todo list feature.
+
+2. What kind of users will visit your site? In other words, what is the demographic of your users?
+The site will be designed for all kinds of travelers. Everyone from the casual weekend traveler, to the full time traveler.
+
+3. What data do you plan on using? You may have not picked your actual API yet, which is fine, just outline what kind of data you would like it to contain. 
+I will be using map data for my site. 
+
+4. In brief, outline your approach to creating your project (knowing that you may not know everything in advance and that these details might change later). Answer questions like the ones below, but feel free to add more information: a. What does your database schema look like? b. What kinds of issues might you run into with your API? c. Is there any sensitive information you need to secure? d. What functionality will your app include? e. What will the user flow look like? f. What features make your site more than CRUD? Do you have any stretch goals?
+Front end (HTML, CSS, and JS)-
+    Home page 
+        -Shows a GIF of the globe and links to log in or register for an account
+        -Once a user logs or registers in they will be directed to their user home page
+    User home page 
+        -Shows existing trip overviews and a link to create a new trip	
+        -Links for the user to edit their account info
+    Trip home page 
+        -Shows trip details including the map with the planned route, links to stop itineraries, links to any lists such as packing lists or or todo lists, and buttons to modify/update any trip details
+    Create a new trip page 
+        -Shows map and allows user to create route, itineraries, packing lists and to do lists
+Back end (Python, Flask, SQLAlchemy, Flask WTForms)
+    -Models for User, PackingList, ToDoList, Itinerary, Trip
+    -Flask WTForms for all forms - new/update user account, new/update packing list, new/update to do list, new/update itinerary
+    -Bcrypt hash for password storage and authentication
+Database (SQL)
+    Stores data for the following:
+        -Users
+        -PackingLists
+        -ToDoLists
+        -Itineraries
+        -Trips
