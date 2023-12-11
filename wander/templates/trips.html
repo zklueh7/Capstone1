@@ -1,0 +1,14 @@
+{% extends 'base.html' %} 
+{% block content %}
+<h2>My Trips</h2>
+{% if trips %} 
+{% for trip in trips %} 
+<a href="/trips/{{trip.id}}">{{trip.name}}, {{trip.description}}</a> 
+<a href="/trips/{{trip.id}}/delete">X</a>
+<br>
+{% endfor %}
+{% else %}
+No trips yet
+{% endif %}
+<a href="/trips/new">Create a new trip!</a>
+{% endblock %}
