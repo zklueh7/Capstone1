@@ -1,24 +1,6 @@
 {% extends 'base.html' %} 
 {% block content %} 
-<h1>Wander</h1>
-<p>{{message}}</p>
-<div id ="map"></div>
-<script src="/trip.js"></script>
-<script>
-    // Creating map options
-    var mapOptions = {
-       center: [40.014984, -105.270546],
-       zoom: 10
-    }
-    
-    // Creating a map object
-    var map = new L.map('map', mapOptions);
-    
-    // Creating a Layer object
-    var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-    
-    // Adding layer to the map
-    map.addLayer(layer);
- </script>
- 
+<p class="h2">{{message}}</p>
+<a href="/trips" class="btn btn-secondary">My trips</a><br>
+<a href="/logout" class="btn btn-danger">Logout</a><br>
 {% endblock %}

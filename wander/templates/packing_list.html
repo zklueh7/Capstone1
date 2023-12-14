@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Packing List</h2>
+<h2>Packing List for {{trip.name}}</h2>
 <ul>
 {% for item in packing_list %}
-    <li>{{item.item_name}}, {{item.pack_status}} <a href="/packing_list/{{item.id}}/delete">X</a></li>
+    <li>
+        <input type="checkbox" id={{item.id}} {{"checked" if item.pack_status == True}}> {{item.item_name}} <a href="/packing_list/{{item.id}}/delete" class="btn btn-secondary">X</a>
+    </li> 
 {% endfor %}
 </ul>
 <form method="POST" id="pack_form">
@@ -18,4 +20,28 @@
 
     <button class="btn btn-primary btn-block btn-lg">Add item</button>
   </form>
+  <a href="/trips/{{trip.id}}" class="btn btn-secondary">Back to trip overview</a>
+
+
+  <script>
+    $(document).ready(function(){
+    
+        const $input = $('input');
+        const item_id = $input.attr('id');
+    
+        async function togglePackStatus(e) {
+            console.log("click");
+            await axios({
+                url: `/packing_list/${item_id}/update`,
+                method: "POST"
+            });
+        }
+        $input.on('click', togglePackStatus)
+    
+    })
+        
+    
+    </script>
+
 {% endblock %}
+

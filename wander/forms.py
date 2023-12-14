@@ -23,7 +23,6 @@ class TripForm(FlaskForm):
     """Create a new Trip"""
 
     name = StringField("Trip Name", validators=[InputRequired()])
-    description = StringField("Trip Description")
 
 class PackItemForm(FlaskForm):
     """Add a new item to a packing list"""

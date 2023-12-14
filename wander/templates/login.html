@@ -2,7 +2,7 @@
 {% block content %}
 <div class="row justify-content-md-center">
     <div class="col-md-7 col-lg-5">
-      <h2 class="join-message">Welcome back.</h2>
+      <h2 class="form-title">Welcome back.</h2>
 
       <form method="POST" id="user_form">
         {{ form.hidden_tag() }}
@@ -15,8 +15,9 @@
         {% endfor %}
 
         <button class="btn btn-primary btn-block btn-lg">Log in</button>
+        <a href="/register" class="btn btn-secondary">Create new account</a>
       </form>
     </div>
-    <a href="/register">Create new account</a>
+   
   </div>
 {% endblock %}

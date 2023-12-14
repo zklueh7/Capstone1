@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% block content %} 
-{{trip.name}}, {{trip.description}}
-<a href="/trips/{{trip.id}}/delete">Delete trip</a>
-<a href="/trips/{{trip.id}}/edit">Edit trip</a>
-<a href="/trips/{{trip.id}}/packing_list">Packing list</a>
+<a href="/trips" class="btn btn-secondary">Back to my trips</a> <br>
+{{trip.name}}
+<a href="/trips/{{trip.id}}/delete" class="btn btn-secondary">Delete trip</a>
+<a href="/trips/{{trip.id}}/edit" class="btn btn-secondary">Edit trip details</a>
+<a href="/trips/{{trip.id}}/packing_list" class="btn btn-secondary">Packing list</a>
 
 <div id ="map"></div>
 <div id="stops">
@@ -22,29 +23,66 @@
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-    var stop = 0;
+    let stop = 0;
 
-    function stopHTML(e) {
+    getStops();
+
+
+    async function getStops() {
+        let stops = await axios({
+            url: `${window.location.pathname}/stops`,
+            method: "GET"
+        })
+        for (let item of stops.data.stops) {
+            console.log(item);
+        stop++;
+        let marker = L.marker();
+        let popup = L.popup();
+        marker.setLatLng(item).addTo(map);
+        let HTML = getStopHTML(item, stop);
+        marker.bindPopup(`${HTML.popup}`); 
+	    $('ol').append(`${HTML.list}`);
+    }
+    }
+
+    function getStopInfo(e) {
         let lat = Math.round(e.latlng.lat * 1000) / 1000;
         let lng = Math.round(e.latlng.lng * 1000) / 1000;
-        stop++;
+        return {
+            "lat": lat,
+            "lng": lng,
+        }
+    }
+
+    function getStopHTML(latlng, stop) {
         let HTML = 
         {popup: `<b>Stop ${stop}</b> <br>
-        latitude: ${lat} <br>
-        longitude: ${lng}`,
-        list: `Latitude: ${lat}, Longitude: ${lng}`};
+        latitude: ${latlng.lat} <br>
+        longitude: ${latlng.lng}`,
+        list: `<li class="stops">Latitude: ${latlng.lat}, Longitude: ${latlng.lng} 
+        <a href="/stops/${stop}/delete" class="btn btn-danger">X</a></li>`};
         return HTML;
     }
     
+    async function addStop(lat, lng) {
+        await axios({
+            url: `${window.location.pathname}/stops/new`,
+            method: "POST",
+            params: {"latitude": lat,
+                     "longitude": lng}
+        });
+    }
 
     function onMapClick(e) {
-        var marker = L.marker();
-        var popup = L.popup();
-        marker.setLatLng(e.latlng).addTo(map);
-        let HTML = stopHTML(e);
-        marker.bindPopup(`${HTML["popup"]}`); 
-	    $('ol').append(`<li class="stops">${HTML["list"]}</li>`)
-        
+        stop++;
+        let latlng = getStopInfo(e);
+        let marker = L.marker();
+        let popup = L.popup();
+        marker.setLatLng(latlng).addTo(map);
+        let HTML = getStopHTML(latlng, stop);
+        marker.bindPopup(`${HTML.popup}`); 
+	    $('ol').append(`${HTML.list}`);
+        addStop(latlng.lat, latlng.lng);
     }
     map.on('click', onMapClick)
 

@@ -1,0 +1,32 @@
+#map {
+    width: 500px;
+    height: 500px;
+    margin: 10px;
+}
+
+#logo {
+    font-size: 45px;
+    text-decoration: none;
+    color: black;
+}
+
+.h2 {
+    font-size: 20px;
+}
+
+body {
+    margin: 5px;
+}
+
+.btn {
+    margin-bottom: 5px;
+}
+
+.form-title {
+    font: 30px;
+}
+
+.btn {
+    font-size: 14px;
+    padding: 2px 6px 2px 6px;
+}

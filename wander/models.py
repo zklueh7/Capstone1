@@ -61,8 +61,6 @@ class Trip(db.Model):
                           unique=True,
                           nullable=False)
     
-    description = db.Column(db.Text
-                                 )
     
 class Stop(db.Model):
     """Trip stop (location)"""
@@ -72,23 +70,33 @@ class Stop(db.Model):
     id = db.Column(db.Integer,
                    primary_key=True)
     
-    stop_name = db.Column(db.Text,
-                          nullable=False)
-    
     latitude = db.Column(db.Text,
                          nullable=False)
     
     longitude = db.Column(db.Text,
                           nullable=False)
     
-    arrival_date = db.Column(db.Text,
-                             nullable=False)
+    trip_id = db.Column(db.Integer,
+                        db.ForeignKey('trips.id', ondelete='CASCADE'),
+                        nullable=False)
     
-    departure_date = db.Column(db.Text,
-                               nullable=False)
+    trip = db.relationship('Trip')
+    
+    stop_name = db.Column(db.Text)
+    
+    arrival_date = db.Column(db.Text)
+    
+    departure_date = db.Column(db.Text)
+
+    def serialize(self):
+        """Returns a dict representation of stop"""
+        return {
+            'lat': self.latitude,
+            'lng': self.longitude
+        }
     
         
-class PackItems(db.Model):
+class PackItem(db.Model):
     """User packing list"""
 
     __tablename__ = "pack_items"
@@ -109,7 +117,7 @@ class PackItems(db.Model):
                             nullable=False,
                             default=False)
     
- 
+# class AgendaItem(db.Model):
 
 def connect_db(app):
     """Connect this database to provided Flask app.

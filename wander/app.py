@@ -1,6 +1,6 @@
-from flask import Flask, render_template, redirect, request, flash, session, g
+from flask import Flask, render_template, redirect, request, flash, session, g, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
-from models import User, Trip, PackItems, connect_db, db
+from models import User, Trip, PackItem, Stop, connect_db, db
 from forms import RegisterForm, LoginForm, TripForm, PackItemForm
 
 app = Flask(__name__)
@@ -79,7 +79,6 @@ def login():
                                  form.password.data)
         if user:
             do_login(user)
-            flash(f"Hello {user.username}!", "success")
             return redirect("/")
         
         flash("Invalid credentials.", 'danger')
@@ -115,8 +114,7 @@ def new_trip():
         form = TripForm()
 
         if form.validate_on_submit():
-            trip = Trip(name=form.name.data,
-                        description=form.description.data)
+            trip = Trip(name=form.name.data)
             db.session.add(trip)
             db.session.commit()
             return redirect('/trips')
@@ -134,7 +132,8 @@ def trip_detail(trip_id):
     if g.user:
         trip = Trip.query.get(trip_id)
         if trip:
-            return render_template('trip_detail.html', trip=trip)
+            stops = Stop.query.filter(Stop.trip_id == trip_id).all()
+            return render_template('trip_detail.html', trip=trip, stops=stops)
         else:
             flash("Trip id doesn't exist", 'danger')
             return redirect('/trips')
@@ -156,7 +155,7 @@ def edit_trip(trip_id):
                 db.session.commit()
                 flash("Trip edited", 'success')
                 return redirect('/trips')
-            return render_template('edit_trip.html', form=form)
+            return render_template('edit_trip.html', form=form, trip=trip)
         else:
             flash("Trip id does not exist", 'danger')
             return redirect('/trips')
@@ -192,11 +191,11 @@ def packing_list(trip_id):
         form = PackItemForm()
         if trip:
             if form.validate_on_submit():
-                item = PackItems(trip_id=trip_id, item_name=form.item_name.data, pack_status=False)
+                item = PackItem(trip_id=trip_id, item_name=form.item_name.data, pack_status=False)
                 db.session.add(item)
                 db.session.commit()
                 return redirect(f'/trips/{trip_id}/packing_list')
-            packing_list = PackItems.query.filter(PackItems.trip_id == trip_id)
+            packing_list = (PackItem.query.filter(PackItem.trip_id == trip_id).order_by(PackItem.id.asc()).all())
             return render_template("packing_list.html", trip=trip, packing_list=packing_list, form=form)
         else:
             flash("Trip id does not exist", 'danger')
@@ -210,7 +209,7 @@ def packing_list(trip_id):
 def delete_pack_item(item_id):
     """Delete an item from the packing list"""
     if g.user:
-        item = PackItems.query.get(item_id)
+        item = PackItem.query.get(item_id)
         if item:
             db.session.delete(item)
             db.session.commit()
@@ -223,6 +222,54 @@ def delete_pack_item(item_id):
         return redirect('/login')
 
 
+@app.route('/packing_list/<item_id>/update', methods=["GET", "POST"])
+def update_pack_item(item_id):
+    """Delete an item from the packing list"""
+    if g.user:
+        item = PackItem.query.get(item_id)
+        if item.pack_status == True:
+            item.pack_status = False
+        else:
+            item.pack_status = True
+        db.session.add(item)
+        db.session.commit()
+        return ("Success", 200)
+    else:
+        flash("Login to view packing lists", 'danger')
+        return redirect('/login')
+
+##################################################################
+# Stops
+
+@app.route('/trips/<trip_id>/stops')
+def get_stops(trip_id):
+    """Return stops for trip"""
+    stops = [stop.serialize() for stop in Stop.query.filter(Stop.trip_id == trip_id).order_by(Stop.id.asc()).all()]
+    return jsonify(stops=stops)
+
+@app.route('/trips/<trip_id>/stops/new', methods=["GET", "POST"])
+def new_stop(trip_id):
+    """Create a new stop"""
+    # stop_num = request.args.get('stop_num')
+    latitude = request.args.get('latitude')
+    longitude = request.args.get('longitude')
+    stop = Stop(latitude=latitude, longitude=longitude, trip_id=trip_id)
+    db.session.add(stop)
+    db.session.commit()
+    return redirect(f'/trips/{trip_id}')
+
+
+@app.route('/trips/<trip_id>/stops/<stop_id>/edit')
+def edit_stop():
+    """Edit a stop"""
+    return render_template('trip_detail.html')
+
+
+@app.route('/trips/<trip_id>/stops/<stop_id>/delete')
+def delete_stop(stop_id):
+    """Delete a stop"""
+    return render_template('trip_detail.html')
+
 ##################################################################
 # Homepage
 
@@ -230,7 +277,7 @@ def delete_pack_item(item_id):
 def homepage():
     """Homepage"""
     if g.user:
-        message = f"Hi {g.user.username}"
+        message = f"Hi {g.user.username}!"
         return render_template("home.html", message=message)
     else:
-        return render_template("home.html", message="")
+        return render_template("home-anon.html")
