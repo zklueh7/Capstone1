@@ -183,9 +183,25 @@ def delete_trip(trip_id):
         return redirect('/login')
     
 
-@app.route('/trips/<trip_id>/packing_list', methods=["GET", "POST"])
+@app.route('/trips/<trip_id>/packing_list')
 def packing_list(trip_id):
     """Show the packing list for the trip"""
+    if g.user:
+        trip = Trip.query.get(trip_id)
+        form = PackItemForm()
+        if trip:
+            packing_list = (PackItem.query.filter(PackItem.trip_id == trip_id).order_by(PackItem.id.asc()).all())
+            return render_template("packing_list.html", trip=trip, packing_list=packing_list, form=form)
+        else:
+            flash("Trip id does not exist", 'danger')
+            return redirect('/trips')
+    else:
+        flash("Login to view packing lists", 'danger')
+        return redirect('/login')
+
+@app.route('/trips/<trip_id>/packing_list/add', methods=["GET", "POST"])
+def packing_list_form(trip_id):
+    """Add item to packing list"""
     if g.user:
         trip = Trip.query.get(trip_id)
         form = PackItemForm()
@@ -195,8 +211,7 @@ def packing_list(trip_id):
                 db.session.add(item)
                 db.session.commit()
                 return redirect(f'/trips/{trip_id}/packing_list')
-            packing_list = (PackItem.query.filter(PackItem.trip_id == trip_id).order_by(PackItem.id.asc()).all())
-            return render_template("packing_list.html", trip=trip, packing_list=packing_list, form=form)
+            return render_template("packing_list_form.html", trip=trip, packing_list=packing_list, form=form)
         else:
             flash("Trip id does not exist", 'danger')
             return redirect('/trips')
@@ -224,7 +239,7 @@ def delete_pack_item(item_id):
 
 @app.route('/packing_list/<item_id>/update', methods=["GET", "POST"])
 def update_pack_item(item_id):
-    """Delete an item from the packing list"""
+    """Update the packed status of an item"""
     if g.user:
         item = PackItem.query.get(item_id)
         if item.pack_status == True:

@@ -85,3 +85,18 @@ body {
     font-family: Montserrat;
 }
 
+.form {
+    margin-bottom: 10px;
+}
+
+.form-title {
+    font-family: Montserrat;
+    margin-top: 10px;
+}
+
+.login {
+    font-family: Montserrat;
+}
+ a {
+    text-decoration: none;
+ }

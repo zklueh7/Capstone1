@@ -9,16 +9,17 @@
 <div class="page-content">
     <p class="page-title">{{trip.name}} packing list</p>
     <form method="POST" id="pack_form">
-        {{ form.hidden_tag() }}
+        <div class="form">
+            {{ form.hidden_tag() }}
     
-        {% for field in form if field.widget.input_type != 'hidden' %}
-          {% for error in field.errors %}
-            <span class="text-danger">{{ error }}</span>
-          {% endfor %}
-          {{ field(placeholder=field.label.text, class="form-control") }}
-        {% endfor %}
-    
-        <button class="btn btn-primary btn-block btn-lg">Add item</button>
+            {% for field in form if field.widget.input_type != 'hidden' %}
+              {% for error in field.errors %}
+                <span class="text-danger">{{ error }}</span>
+              {% endfor %}
+              {{ field(placeholder=field.label.text, class="form-control") }}
+            {% endfor %}
+        </div>
+        <button class="btn btn-secondary">Add item</button>
         <a href="/trips/{{trip.id}}" class="btn btn-secondary">Back to trip overview</a>
       </form>
 </div>

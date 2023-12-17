@@ -1,21 +1,22 @@
 {% extends 'base.html' %} 
 {% block content %} 
-<div class="row justify-content-md-center">
-    <div class="col-md-7 col-lg-5">
-      <h2 class="join-message">Hello new user.</h2>
-
+<div id="nav-bar">
+    <a href="/" id="logo">Wander</a>
+</div>
+<div class="page-content">
+      <h2 class="form-title">Hello new user.</h2>
       <form method="POST" id="user_form">
-        {{ form.hidden_tag() }}
+        <div class="form">
+            {{ form.hidden_tag() }}
 
-        {% for field in form if field.widget.input_type != 'hidden' %}
-          {% for error in field.errors %}
-            <span class="text-danger">{{ error }}</span>
-          {% endfor %}
-          {{ field(placeholder=field.label.text, class="form-control") }}
-        {% endfor %}
-
-        <button class="btn btn-primary btn-block btn-lg">Register</button>
+            {% for field in form if field.widget.input_type != 'hidden' %}
+              {% for error in field.errors %}
+                <span class="text-danger">{{ error }}</span>
+              {% endfor %}
+              {{ field(placeholder=field.label.text, class="form-control") }}
+            {% endfor %}
+        </div>
+        <button class="btn btn-secondary btn-block btn-lg">Register</button>
       </form>
-    </div>
-  </div>
+</div>
 {% endblock %}

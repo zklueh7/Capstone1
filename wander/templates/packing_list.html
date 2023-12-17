@@ -8,6 +8,7 @@
 </div>
 <div class="page-content">
     <p class="page-title">{{trip.name}} packing list</p>
+    {% if packing_list %}
     <ol>
     {% for item in packing_list %}
         <li>
@@ -15,34 +16,22 @@
         </li> 
     {% endfor %}
     </ol>
-    <!-- <form method="POST" id="pack_form">
-        {{ form.hidden_tag() }}
-    
-        {% for field in form if field.widget.input_type != 'hidden' %}
-          {% for error in field.errors %}
-            <span class="text-danger">{{ error }}</span>
-          {% endfor %}
-          {{ field(placeholder=field.label.text, class="form-control") }}
-        {% endfor %}
-    
-        <button class="btn btn-primary btn-block btn-lg">Add item</button>
-        <a href="/trips/{{trip.id}}" class="btn btn-secondary">Back to trip overview</a>
-      </form> -->
-    <button class="btn btn-secondary">Add new item</button>
+    {% else %}
+    <p>No items added yet</p>
+    {% endif %}
+    <a href="/trips/{{trip.id}}/packing_list/add" class="btn btn-secondary">Add new item</a>
     <a href="/trips/{{trip.id}}" class="btn btn-secondary">Back to trip overview</a>
 </div>
 
   
-
-
   <script>
     $(document).ready(function(){
     
         const $input = $('input');
-        const item_id = $input.attr('id');
     
         async function togglePackStatus(e) {
-            console.log("click");
+            const item_id = $(this).attr('id');
+            console.log(`item id: ${item_id}`);
             await axios({
                 url: `/packing_list/${item_id}/update`,
                 method: "POST"
@@ -51,8 +40,6 @@
         $input.on('click', togglePackStatus)
     
     })
-        
-    
     </script>
 
 {% endblock %}
