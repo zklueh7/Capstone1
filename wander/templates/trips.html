@@ -1,18 +1,27 @@
 {% extends 'base.html' %} 
 {% block content %}
-<h2 class="h2">My Trips</h2>
-{% if trips %} 
-<ul>
-{% for trip in trips %} 
-<li>
-    <a href="/trips/{{trip.id}}" class="btn btn-secondary">{{trip.name}}</a> 
-    <a href="/trips/{{trip.id}}/delete" class="btn btn-danger">Delete</a>
-</li>
-{% endfor %}
-</ul>
-
-{% else %}
-<p>No trips yet</p>
-{% endif %}
-<a href="/trips/new" class="btn btn-secondary">Create a new trip!</a><br>
+<div id="nav-bar">
+        <p id="logo">Wander</p>
+        <a href="/" class="nav">Home |</a>
+        <a href="/trips" class="nav">My trips |</a>
+        <a href="/logout" class="nav">Logout</a>
+</div>
+<div id="my-trips">
+    <p class="page-title">My Trips</p>
+    {% if trips %} 
+    <ol>
+    {% for trip in trips %} 
+    <li>
+        <a href="/trips/{{trip.id}}" class="trip-link">{{trip.name}}</a> 
+        <a href="/trips/{{trip.id}}/delete" class="btn btn-secondary">Delete</a>
+    </li>
+    {% endfor %}
+    </ol>
+    
+    {% else %}
+    <p>No trips yet</p>
+    {% endif %}
+    <a href="/trips/new" class="btn btn-secondary">Create a new trip!</a><br>
+</div>
+   
 {% endblock %}

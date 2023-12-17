@@ -1,26 +1,38 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Packing List for {{trip.name}}</h2>
-<ul>
-{% for item in packing_list %}
-    <li>
-        <input type="checkbox" id={{item.id}} {{"checked" if item.pack_status == True}}> {{item.item_name}} <a href="/packing_list/{{item.id}}/delete" class="btn btn-secondary">X</a>
-    </li> 
-{% endfor %}
-</ul>
-<form method="POST" id="pack_form">
-    {{ form.hidden_tag() }}
-
-    {% for field in form if field.widget.input_type != 'hidden' %}
-      {% for error in field.errors %}
-        <span class="text-danger">{{ error }}</span>
-      {% endfor %}
-      {{ field(placeholder=field.label.text, class="form-control") }}
+<div id="nav-bar">
+    <p id="logo">Wander</p>
+    <a href="/" class="nav">Home |</a>
+    <a href="/trips" class="nav">My trips |</a>
+    <a href="/logout" class="nav">Logout</a>
+</div>
+<div class="page-content">
+    <p class="page-title">{{trip.name}} packing list</p>
+    <ol>
+    {% for item in packing_list %}
+        <li>
+            {{item.item_name}} <input type="checkbox" id={{item.id}} {{"checked" if item.pack_status == True}}>  <a href="/packing_list/{{item.id}}/delete" class="btn btn-secondary">Delete</a>
+        </li> 
     {% endfor %}
+    </ol>
+    <!-- <form method="POST" id="pack_form">
+        {{ form.hidden_tag() }}
+    
+        {% for field in form if field.widget.input_type != 'hidden' %}
+          {% for error in field.errors %}
+            <span class="text-danger">{{ error }}</span>
+          {% endfor %}
+          {{ field(placeholder=field.label.text, class="form-control") }}
+        {% endfor %}
+    
+        <button class="btn btn-primary btn-block btn-lg">Add item</button>
+        <a href="/trips/{{trip.id}}" class="btn btn-secondary">Back to trip overview</a>
+      </form> -->
+      <button class="btn btn-secondary">Add new item</button>
+        <!-- <a href="/trips/{{trip.id}}" class="btn btn-secondary">Back to trip overview</a> -->
+</div>
 
-    <button class="btn btn-primary btn-block btn-lg">Add item</button>
-  </form>
-  <a href="/trips/{{trip.id}}" class="btn btn-secondary">Back to trip overview</a>
+  
 
 
   <script>

@@ -1,32 +1,87 @@
 #map {
     width: 500px;
     height: 500px;
-    margin: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 #logo {
-    font-size: 45px;
+    font-size: 55px;
+    color: black;
+    font-family: 'Space mono';
+    display: inline;
+}
+
+#nav-bar {
+    background-color: #cb8de8;
+    padding-left: 10px;
+}
+
+.nav {
+    display: inline;
     text-decoration: none;
     color: black;
+    font-family: Montserrat;
 }
 
-.h2 {
-    font-size: 20px;
-}
 
 body {
-    margin: 5px;
+    background-color: #9ed8ca;
 }
 
 .btn {
     margin-bottom: 5px;
+    font-family: Montserrat;
+    font-size: 14px;
+    padding: 2px 6px 2px 6px;
 }
 
 .form-title {
     font: 30px;
 }
 
-.btn {
-    font-size: 14px;
-    padding: 2px 6px 2px 6px;
+
+#home-page {
+    margin: auto;
+    margin-top: 10px;
+    width: 250px;
+    text-align: center;
+    background-color: #cb8de8;
+    border-radius: 10px;
+    padding-bottom: 10px;
 }
+
+.home-msg {
+    font-size: 20px;
+    font-family: Montserrat;
+}
+
+
+#my-trips {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.trip-link {
+    text-decoration: none;
+    color: black;
+    font-size: 16px;
+    font-family: Montserrat;
+}
+
+.page-title {
+    font-size: 25px;
+    font-family: 'Montserrat';
+    text-decoration: underline;
+}
+
+.page-content {
+    margin-left: 10px;
+    margin-top: 10px;
+    font-family: Montserrat;
+}
+
+#stops {
+    font-family: Montserrat;
+}
+

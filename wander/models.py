@@ -90,10 +90,9 @@ class Stop(db.Model):
 
     def serialize(self):
         """Returns a dict representation of stop"""
-        return {
-            'lat': self.latitude,
-            'lng': self.longitude
-        }
+        return { 'id': self.id,
+                 'lat': self.latitude,
+                 'lng': self.longitude }
     
         
 class PackItem(db.Model):

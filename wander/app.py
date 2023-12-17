@@ -247,16 +247,17 @@ def get_stops(trip_id):
     stops = [stop.serialize() for stop in Stop.query.filter(Stop.trip_id == trip_id).order_by(Stop.id.asc()).all()]
     return jsonify(stops=stops)
 
+
 @app.route('/trips/<trip_id>/stops/new', methods=["GET", "POST"])
 def new_stop(trip_id):
     """Create a new stop"""
-    # stop_num = request.args.get('stop_num')
     latitude = request.args.get('latitude')
     longitude = request.args.get('longitude')
     stop = Stop(latitude=latitude, longitude=longitude, trip_id=trip_id)
     db.session.add(stop)
     db.session.commit()
-    return redirect(f'/trips/{trip_id}')
+    print("hi")
+    return ("Success", 200)
 
 
 @app.route('/trips/<trip_id>/stops/<stop_id>/edit')
@@ -265,10 +266,13 @@ def edit_stop():
     return render_template('trip_detail.html')
 
 
-@app.route('/trips/<trip_id>/stops/<stop_id>/delete')
+@app.route('/stops/<stop_id>/delete', methods=["DELETE"])
 def delete_stop(stop_id):
     """Delete a stop"""
-    return render_template('trip_detail.html')
+    stop = Stop.query.get(stop_id)
+    db.session.delete(stop)
+    db.session.commit()
+    return ("Success", 200)
 
 ##################################################################
 # Homepage

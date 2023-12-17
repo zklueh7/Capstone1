@@ -1,6 +1,19 @@
 {% extends 'base.html' %} 
 {% block content %} 
-<p class="h2">{{message}}</p>
-<a href="/trips" class="btn btn-secondary">My trips</a><br>
-<a href="/logout" class="btn btn-danger">Logout</a><br>
+<div id="home-page">
+    <p id="logo">Wander</p>
+    <p class="home-msg">{{message}}</p>
+    <a href="/trips" class="btn btn-secondary">My trips</a><br>
+    <a href="/logout" class="btn btn-secondary">Logout</a>
+</div>
 {% endblock %}
+
+
+<!-- <div id="home-page">
+    <a href="/">
+        <h1 id="logo">Wander</h1>
+    </a>
+    <p class="h2">{{message}}</p>
+    <a href="/trips" class="btn btn-secondary">My trips</a><br>
+    <a href="/logout" class="btn btn-secondary">Logout</a><br>
+</div> -->
