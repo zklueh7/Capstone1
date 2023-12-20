@@ -15,7 +15,7 @@
     <a href="/trips/{{trip.id}}/edit" class="btn btn-secondary">Edit trip details</a>
     <a href="/trips/{{trip.id}}/packing_list" class="btn btn-secondary">Packing list</a>
     <a href="/trips/{{trip.id}}/delete" class="btn btn-secondary">Delete trip</a>
-
+    
     <div id ="map"></div>
     <div id="stops">
         <h4 class="page-title">Stops</h4>
@@ -30,26 +30,27 @@
         // add a Leaflet map in the "map" div. Set lat and long of center and zoom level
         var map = L.map('map').setView([37.357, -98.789], 3)
 
-        // add OpenStreetMap tile layer, set max zoom and attribution text
+        // add OpenStreetMap tile layer, set max zoom, center, and copyright text
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', 
         { maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 
-        L.Control.geocoder().addTo(map);
-
+        // initialize stop_num for marker popups
         let stop_num = 0;
 
+        // add existing stops in database to page on initial page load
         getStops();
 
 
+        // add existing stops from database to page
         async function getStops() {
             let stops = await axios({
                 url: `${window.location.pathname}/stops`,
                 method: "GET"
             })
             if (stops.data.stops.length == 0) {
-                let HTML = "<p id='no-stops'>No stops added yet</p>";
+                let HTML = "<p id='no-stops'>Click a location or search for an address to add a stop!</p>";
                 $('#stops').append(`${HTML}`);
             }
             else {
@@ -68,15 +69,19 @@
             
         }
 
-        function getStopInfo(e) {
-            let lat = Math.round(e.latlng.lat * 1000) / 1000;
-            let lng = Math.round(e.latlng.lng * 1000) / 1000;
+
+        // round lat and lng to three decimal places
+        function getStopInfo(latitude, longitude) {
+            let lat = Math.round(latitude * 1000) / 1000;
+            let lng = Math.round(longitude * 1000) / 1000;
             return {
                 "lat": lat,
                 "lng": lng,
             }
         }
 
+
+        // Create HTML for stop list and marker popup from stop info
         function getStopHTML(stop_name, stop_num, stop_id) {
             let HTML = 
             {popup: `<b>Stop ${stop_num}</b> <br>
@@ -88,26 +93,66 @@
             return HTML;
         }
 
-        var geocoder = L.Control.Geocoder.nominatim();
-        var marker;
 
-        map.on('click', function(e) {
-        geocoder.reverse(e.latlng, map.options.crs.scale(map.getZoom()), async function(results) {
-            stop_num++;  
-            let latlng = getStopInfo(e);
-            var r = results[0];
+        // add new stop to page on map search
+        L.Control.geocoder({
+            // turn off default marker and popup
+            defaultMarkGeocode: false
+        }).on('markgeocode', async function(e) {
+            // if this is the first stop added to trip remove the 'no stops yet' text
             if ($('#no-stops')) {
                 $('#no-stops').remove();
             }
+
+            // round lat and lng to 3 decimal places and get stop name from search 
+            let latlng = getStopInfo(e.geocode.center.lat, e.geocode.center.lng);
+            let stop_name = e.geocode.name;
+
+            // add stop to database and get stop id
             let stop_id = await axios({
                 url: `${window.location.pathname}/stops/new`,
                 method: "POST",
                 params: {"latitude": latlng.lat,
                         "longitude": latlng.lng,
-                        "stop_name": r.name}
+                        "stop_name": stop_name}
             });
 
-            let HTML = getStopHTML(r.name, stop_num, stop_id.data.stop_id);
+            // add stop to stop list and marker with popup to map
+            stop_num++;
+            let HTML = getStopHTML(stop_name, stop_num, stop_id.data.stop_id);
+            let marker = L.marker();
+            let popup = L.popup();
+            marker.setLatLng(latlng).addTo(map);
+            marker.bindPopup(`${HTML.popup}`); 
+            $('ol').append(`${HTML.list}`);
+        }).addTo(map);
+
+        
+        // add new stop to page on map click
+        map.on('click', function(e) {
+        let geocoder = L.Control.Geocoder.nominatim();
+        geocoder.reverse(e.latlng, map.options.crs.scale(map.getZoom()), async function(results) {
+            // if this is the first stop added to trip remove the 'no stops yet' text
+            if ($('#no-stops')) {
+                $('#no-stops').remove();
+            }
+
+            // round lat and lng to 3 decimal places and get stop info from reverse geocode
+            let latlng = getStopInfo(e.latlng.lat, e.latlng.lng);
+            var stop_info = results[0];
+
+            // add stop to database and get stop id
+            let stop_id = await axios({
+                url: `${window.location.pathname}/stops/new`,
+                method: "POST",
+                params: {"latitude": latlng.lat,
+                        "longitude": latlng.lng,
+                        "stop_name": stop_info.name}
+            });
+
+            // add stop to stop list and marker with popup to map
+            stop_num++;
+            let HTML = getStopHTML(stop_info.name, stop_num, stop_id.data.stop_id);
             let marker = L.marker();
             let popup = L.popup();
             marker.setLatLng(latlng).addTo(map);
@@ -117,6 +162,7 @@
         
     })
 
+        // Delete stop from database and remove from page on delete button click
         $(document).on('click', '.delete', async function(){
             let stop_id = ($(this).parent().attr('id'));
             await axios({
