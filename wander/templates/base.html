@@ -16,10 +16,13 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kablammo&family=Monoton&family=Montserrat:wght@300;400;500&family=Mystery+Quest&family=Roboto:wght@500&family=Space+Mono:ital,wght@1,700&family=Tektur:wght@500&display=swap" rel="stylesheet">
 </head>
+
 <body>  
     <div class="container">
         {% for category, message in get_flashed_messages(with_categories=True) %}

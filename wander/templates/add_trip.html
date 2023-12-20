@@ -1,16 +1,28 @@
 {% extends 'base.html' %} 
 {% block content %}
-<h2>Add Trip</h2>
-<form method="POST" id="trip_form">
-    {{ form.hidden_tag() }}
 
-    {% for field in form if field.widget.input_type != 'hidden' %}
-      {% for error in field.errors %}
-        <span class="text-danger">{{ error }}</span>
-      {% endfor %}
-      {{ field(placeholder=field.label.text, class="form-control") }}
-    {% endfor %}
+<div id="nav-bar">
+    <p id="logo">Wander</p>
+    <a href="/" class="nav">Home |</a>
+    <a href="/trips" class="nav">My trips |</a>
+    <a href="/logout" class="nav">Logout</a>
+</div>
 
-    <button class="btn btn-primary btn-block btn-lg">Add trip</button>
-  </form>
+<div class="page-content">
+    <p class="page-title">Add Trip</p>
+    <form method="POST">
+        <div class="form">
+            {{ form.hidden_tag() }}
+    
+            {% for field in form if field.widget.input_type != 'hidden' %}
+              {% for error in field.errors %}
+                <span class="text-danger">{{ error }}</span>
+              {% endfor %}
+              {{ field(placeholder=field.label.text, class="form-control") }}
+            {% endfor %}
+        </div>
+        <button class="btn btn-secondary">Add trip</button>
+      </form>
+</div>
+
 {% endblock %}

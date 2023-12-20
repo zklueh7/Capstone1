@@ -1,9 +1,37 @@
-#map {
-    width: 500px;
-    height: 500px;
+/********** General **********/
+
+body {
+    background-color: #9ed8ca;
+}
+
+.page-title {
+    font-size: 25px;
+    font-family: 'Montserrat';
+    text-decoration: underline;
+}
+
+.page-content {
+    margin-left: 10px;
     margin-top: 10px;
+    font-family: Montserrat;
+}
+
+.btn {
+    margin-bottom: 5px;
+    font-family: Montserrat;
+    font-size: 14px;
+    padding: 2px 6px 2px 6px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.form {
     margin-bottom: 10px;
 }
+
+/********** Navbar **********/
 
 #logo {
     font-size: 55px;
@@ -24,22 +52,7 @@
     font-family: Montserrat;
 }
 
-
-body {
-    background-color: #9ed8ca;
-}
-
-.btn {
-    margin-bottom: 5px;
-    font-family: Montserrat;
-    font-size: 14px;
-    padding: 2px 6px 2px 6px;
-}
-
-.form-title {
-    font: 30px;
-}
-
+/********** Home page **********/
 
 #home-page {
     margin: auto;
@@ -56,11 +69,7 @@ body {
     font-family: Montserrat;
 }
 
-
-#my-trips {
-    margin-left: 10px;
-    margin-top: 10px;
-}
+/******* Trip detail page *******/
 
 .trip-link {
     text-decoration: none;
@@ -69,34 +78,9 @@ body {
     font-family: Montserrat;
 }
 
-.page-title {
-    font-size: 25px;
-    font-family: 'Montserrat';
-    text-decoration: underline;
-}
-
-.page-content {
-    margin-left: 10px;
+#map {
+    width: 500px;
+    height: 500px;
     margin-top: 10px;
-    font-family: Montserrat;
-}
-
-#stops {
-    font-family: Montserrat;
-}
-
-.form {
     margin-bottom: 10px;
 }
-
-.form-title {
-    font-family: Montserrat;
-    margin-top: 10px;
-}
-
-.login {
-    font-family: Montserrat;
-}
- a {
-    text-decoration: none;
- }

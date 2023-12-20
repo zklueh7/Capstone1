@@ -60,6 +60,10 @@ class Trip(db.Model):
     name = db.Column(db.Text,
                           unique=True,
                           nullable=False)
+
+    username = db.Column(db.Text,
+                        db.ForeignKey('users.username', ondelete='CASCADE'),
+                        nullable=False)
     
     
 class Stop(db.Model):
@@ -83,16 +87,13 @@ class Stop(db.Model):
     trip = db.relationship('Trip')
     
     stop_name = db.Column(db.Text)
-    
-    arrival_date = db.Column(db.Text)
-    
-    departure_date = db.Column(db.Text)
 
     def serialize(self):
         """Returns a dict representation of stop"""
         return { 'id': self.id,
                  'lat': self.latitude,
-                 'lng': self.longitude }
+                 'lng': self.longitude,
+                  'stop_name': self.stop_name }
     
         
 class PackItem(db.Model):
@@ -116,7 +117,24 @@ class PackItem(db.Model):
                             nullable=False,
                             default=False)
     
-# class AgendaItem(db.Model):
+
+class ItineraryItem(db.Model):
+    """User packing list"""
+
+    __tablename__ = "itinerary_items"
+
+    id = db.Column(db.Integer,
+                   primary_key=True)
+    
+    stop_id = db.Column(db.Integer,
+                        db.ForeignKey('stops.id', ondelete='CASCADE'),
+                        nullable=False)
+    
+    stop = db.relationship('Stop')
+
+    item_name = db.Column(db.Text,
+                          nullable=False)
+
 
 def connect_db(app):
     """Connect this database to provided Flask app.
@@ -127,32 +145,3 @@ def connect_db(app):
     db.app = app
     db.init_app(app)
 
-
-# class ToDoList(db.Model):
-#     """Trip to do list"""
-
-#     __tablename__ = "todo_lists"
-
-#     id = db.Column(db.Integer, 
-#                    primary_key=True)
-    
-#     list_name = db.Column(db.Text,
-#                           default="To-Do List")
-    
-    
-# class ToDo(db.Model):
-#     """To do items"""
-
-#     __tablename__ = "todos"
-
-#     id = db.Column(db.Integer,
-#                    primary_key=True)
-    
-#     todo_item = db.Column(db.Text,
-#                           nullable=False)
-    
-#     completion_status = db.Column(db.Boolean,
-#                                   nullable=False,
-#                                   default=False)
-
-# 

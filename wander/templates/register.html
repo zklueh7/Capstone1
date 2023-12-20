@@ -1,10 +1,12 @@
 {% extends 'base.html' %} 
 {% block content %} 
+
 <div id="nav-bar">
     <a href="/" id="logo">Wander</a>
 </div>
+
 <div class="page-content">
-      <h2 class="form-title">Hello new user.</h2>
+      <h2 class="form-title">Start wandering today..</h2>
       <form method="POST" id="user_form">
         <div class="form">
             {{ form.hidden_tag() }}
@@ -19,4 +21,5 @@
         <button class="btn btn-secondary btn-block btn-lg">Register</button>
       </form>
 </div>
+
 {% endblock %}

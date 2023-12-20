@@ -9,7 +9,7 @@
 </div>
 
 <div class="page-content">
-    <p class="page-title">{{trip.name}} packing list</p>
+    <p class="page-title">{{stop.stop_name}} itinerary</p>
     <form method="POST">
         <div class="form">
             {{ form.hidden_tag() }}
@@ -21,8 +21,8 @@
               {{ field(placeholder=field.label.text, class="form-control") }}
             {% endfor %}
         </div>
-        <button class="btn btn-secondary">Add item</button>
-        <a href="/trips/{{trip.id}}" class="btn btn-secondary">Back to trip overview</a>
+        <button class="btn btn-secondary">Add itinerary item</button>
+        <a href="/trips/{{stop.trip_id}}" class="btn btn-secondary">Back to trip overview</a>
       </form>
 </div>
 

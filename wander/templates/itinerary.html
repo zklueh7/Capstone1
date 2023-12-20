@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div id="nav-bar">
+    <p id="logo">Wander</p>
+    <a href="/" class="nav">Home |</a>
+    <a href="/trips" class="nav">My trips |</a>
+    <a href="/logout" class="nav">Logout</a>
+</div>
+
+<div class="page-content">
+    <p class="page-title">{{stop.stop_name}} itinerary</p>
+    {% if itinerary %}
+    <ol>
+    {% for item in itinerary %}
+        <li>
+            {{item.item_name}} {{item.item_time}}
+            <a href="/itinerary/{{item.id}}/delete" class="btn btn-secondary">Delete</a>
+        </li> 
+    {% endfor %}
+    </ol>
+    {% else %}
+    <p>No items added yet</p>
+    {% endif %}
+    <a href="/stops/{{stop.id}}/itinerary/add" class="btn btn-secondary">Add new itinerary item</a>
+    <a href="/trips/{{stop.trip_id}}" class="btn btn-secondary">Back to trip overview</a>
+</div>
+
+{% endblock %}
+

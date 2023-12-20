@@ -1,17 +1,21 @@
 {% extends 'base.html' %}
 {% block content %} 
+
+<!-- This works -->
+
 <div id="nav-bar">
     <p id="logo">Wander</p>
     <a href="/" class="nav">Home |</a>
     <a href="/trips" class="nav">My trips |</a>
     <a href="/logout" class="nav">Logout</a>
 </div>
+
 <div class="page-content">
     <p class="page-title">{{trip.name}}</p>
     <a href="/trips/{{trip.id}}/edit" class="btn btn-secondary">Edit trip details</a>
     <a href="/trips/{{trip.id}}/packing_list" class="btn btn-secondary">Packing list</a>
     <a href="/trips/{{trip.id}}/delete" class="btn btn-secondary">Delete trip</a>
-    
+
     <div id ="map"></div>
     <div id="stops">
         <h4 class="page-title">Stops</h4>
@@ -20,6 +24,7 @@
 </div>
 
 <script>
+
     $(document).ready(function(){
 
         // add a Leaflet map in the "map" div. Set lat and long of center and zoom level
@@ -31,6 +36,8 @@
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 
+        L.Control.geocoder().addTo(map);
+
         let stop_num = 0;
 
         getStops();
@@ -41,17 +48,24 @@
                 url: `${window.location.pathname}/stops`,
                 method: "GET"
             })
-            for (let stop of stops.data.stops) 
-            {
-                stop_num++;
-                let marker = L.marker();
-                let popup = L.popup();
-                let latlng = {"lat": stop.lat, "lng": stop.lng}
-                marker.setLatLng(latlng).addTo(map);
-                let HTML = getStopHTML(latlng, stop_num, stop.id);
-                marker.bindPopup(`${HTML.popup}`); 
-                $('ol').append(`${HTML.list}`);
+            if (stops.data.stops.length == 0) {
+                let HTML = "<p id='no-stops'>No stops added yet</p>";
+                $('#stops').append(`${HTML}`);
             }
+            else {
+                for (let stop of stops.data.stops) 
+                    {
+                        stop_num++;
+                        let marker = L.marker();
+                        let popup = L.popup();
+                        let latlng = {"lat": stop.lat, "lng": stop.lng}
+                        marker.setLatLng(latlng).addTo(map);
+                        let HTML = getStopHTML(stop.stop_name, stop_num, stop.id);
+                        marker.bindPopup(`${HTML.popup}`); 
+                        $('ol').append(`${HTML.list}`);
+                    }
+            }
+            
         }
 
         function getStopInfo(e) {
@@ -63,43 +77,56 @@
             }
         }
 
-        function getStopHTML(latlng, stop_num, stop_id) {
+        function getStopHTML(stop_name, stop_num, stop_id) {
             let HTML = 
             {popup: `<b>Stop ${stop_num}</b> <br>
-            latitude: ${latlng.lat} <br>
-            longitude: ${latlng.lng}`,
-            list: `<li class="stops" id=${stop_id}>Latitude: ${latlng.lat}, Longitude: ${latlng.lng} 
-            <button type="button" class="btn btn-secondary">Edit</button>
-            <button type="button" class="btn btn-secondary">Delete</button></li>`};
+            ${stop_name}`,
+            list: `<li class="stops" id=${stop_id}>${stop_name}
+            <a href="/stops/${stop_id}/itinerary" class="btn btn-secondary">Itinerary</a>
+            <a href="/stops/${stop_id}/edit" class="btn btn-secondary">Edit</a>
+            <button type="button" class="delete btn btn-secondary">Delete</button></li>`};
             return HTML;
         }
 
+        var geocoder = L.Control.Geocoder.nominatim();
+        var marker;
 
-        async function addStop(e) {
-            stop_num++;
+        map.on('click', function(e) {
+        geocoder.reverse(e.latlng, map.options.crs.scale(map.getZoom()), async function(results) {
+            stop_num++;  
             let latlng = getStopInfo(e);
-            await axios({
+            var r = results[0];
+            if ($('#no-stops')) {
+                $('#no-stops').remove();
+            }
+            let stop_id = await axios({
                 url: `${window.location.pathname}/stops/new`,
                 method: "POST",
                 params: {"latitude": latlng.lat,
-                        "longitude": latlng.lng}
+                        "longitude": latlng.lng,
+                        "stop_name": r.name}
             });
-            location.reload();
-        }
-        map.on('click', addStop)
 
-        $(document).on('click', '.btn-danger', async function(){
+            let HTML = getStopHTML(r.name, stop_num, stop_id.data.stop_id);
+            let marker = L.marker();
+            let popup = L.popup();
+            marker.setLatLng(latlng).addTo(map);
+            marker.bindPopup(`${HTML.popup}`); 
+            $('ol').append(`${HTML.list}`);
+        })
+        
+    })
+
+        $(document).on('click', '.delete', async function(){
             let stop_id = ($(this).parent().attr('id'));
-            console.log(stop_id);
             await axios({
                 url: `/stops/${stop_id}/delete`,
                 method: "DELETE"
             });
             location.reload();
         })
-
-
     })
+
 </script>
 
 {% endblock %}

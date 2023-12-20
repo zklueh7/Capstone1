@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField
+from wtforms import StringField, PasswordField
+from wtforms.fields.html5 import DateTimeLocalField
 from wtforms.validators import InputRequired, Email, Length
 
 class RegisterForm(FlaskForm):
@@ -28,3 +29,14 @@ class PackItemForm(FlaskForm):
     """Add a new item to a packing list"""
 
     item_name = StringField("Item Name", validators=[InputRequired()])
+
+class StopForm(FlaskForm):
+    """Edit a stop name"""
+
+    stop_name = StringField("Stop name or address", validators=[InputRequired()])
+
+class ItineraryItemForm(FlaskForm):
+    """Add a new item to an itinerary"""
+
+    item_name = StringField("Item Name", validators=[InputRequired()])
+
