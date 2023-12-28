@@ -11,7 +11,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config["SECRET_KEY"] = "abc123"
-toolbar = DebugToolbarExtension(app)
+# toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
 db.create_all()
@@ -64,6 +64,7 @@ def register():
             )
             db.session.add(user)
             db.session.commit()
+
 
         except IntegrityError:
             flash("Username already taken", 'danger')
@@ -205,7 +206,7 @@ def delete_trip(trip_id):
         flash(f"{trip.name} has been deleted", 'success')
     else:
         flash("Trip id does not exist", 'danger')
-        return redirect('/trips')
+    return redirect('/trips')
    
 
 ##################################################################
