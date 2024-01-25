@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///wander"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://spgxsaro:PYGY9wAWQfc3wpWC2aZei46fM4IfF0eE@mahmud.db.elephantsql.com/spgxsaro"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
